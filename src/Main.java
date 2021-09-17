@@ -2,29 +2,165 @@ import java.util.*;
 public class Main {
     public static void main(String[] args){
         Main test = new Main();
-        int[] nums = {2,0,2,1,1,0};
+        int[] nums = {0,1,0,3,12};
         int target = 6;
         int[] nums1 = new int[]{1}, nums2 = new int[]{};//1,3,4,5,6,7,9,10
 
 //        int[] result = test.twoSum(nums,target);
 //        System.out.println("res " + test.sortColors(nums));
-        test.printArray(test.sortColors(nums));
+//        test.removeNthFromEnd();
+        test.printArray(nums);
+    }
+
+    class ListNode {
+        int val;
+        ListNode next;
+        ListNode(int x) {
+            val = x;
+            next = null;
+        }
+        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+
+        public int getLength(ListNode head){
+            int length = 0;
+            while(head.next!=null){
+                length++;
+            }
+            return length;
+        }
+
+        public void printFromHead(ListNode head){
+            ListNode phead = head;
+            while(head.next!=null){
+                System.out.println(phead.val);
+                phead = phead.next;
+            }
+        }
     }
 
 
-    //循环链表判断
-    class ListNode {
-      int val;
-      ListNode next;
-      ListNode(int x) {
-          val = x;
-          next = null;
-      }
+    //链表排序，时间复杂度O(nlogn)，空间O(1)，自底向上合并（二分，先分成最小的size，然后合并，size <<= 1），合并用merge方法
+    public ListNode sortList(ListNode head){
+        if(head == null){
+            return head;
+        }
+        int length = 1;
+        ListNode node = head;
+        while(node.next!=null){
+            node = node.next;
+            length++;
+        }
+        ListNode newHead = new ListNode(0,head);
+        for (int subLength = 1; subLength < length; subLength <<= 1) {
+            ListNode prev = newHead, curr = newHead.next;
+            while(curr != null) {
+                ListNode head1 = curr;
+                for (int i = 1; i < subLength && curr.next != null; i++) {
+                    curr = curr.next;
+                }
+                ListNode head2 = curr.next;
+                curr.next = null;
+                curr = head2;
+                for (int i = 1; i < subLength && curr != null && curr.next != null; i++) {
+                    curr = curr.next;
+                }
+                ListNode next = null;
+                if (curr != null) {
+                    next = curr.next;
+                    curr.next = null;
+                }
+                ListNode merged = merge(head1, head2);
+                prev.next = merged;
+                while (prev.next != null) {
+                    prev = prev.next;
+                }
+                curr = next;
+            }
+        }
+        return newHead.next;
+    }
+
+    //合并链表，比较后移
+    public ListNode merge(ListNode head1, ListNode head2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode temp = dummyHead, temp1 = head1, temp2 = head2;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.val <= temp2.val) {
+                temp.next = temp1;
+                temp1 = temp1.next;
+            } else {
+                temp.next = temp2;
+                temp2 = temp2.next;
+            }
+            temp = temp.next;
+        }
+        if (temp1 != null) {
+            temp.next = temp1;
+        } else if (temp2 != null) {
+            temp.next = temp2;
+        }
+        return dummyHead.next;
+    }
+
+
+    //删除倒数N个节点
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode phead = new ListNode(0, head);
+        ListNode fast = phead;
+        ListNode slow = phead;
+        for(int i = 0; i < n; i++){
+            fast = fast.next;
+        }
+        while(fast != null && fast.next != null){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return phead.next;
+    }
+    //移动0
+    public void moveZeroes(int[] nums) {
+        int left = 0, right = 0;
+        while(right < nums.length){
+            if(nums[right] != 0){
+                int temp = nums[left];
+                nums[left] = nums[right];
+                nums[right] = temp;
+                left++;
+            }
+            right++;
+        }
     }
 
     /*
+    * 空间O(1)的方法为：反转链表后半部分，然后依次比较；缺点：并发情况下，链表结构会被锁定。
+    * */
+    //回文链表判断
+    public boolean isPalindrome(ListNode head) {
+        ListNode phead = head;
+        int length = phead.getLength(head);
+        Stack<Integer> stack= new Stack();
+        for(int i = 0; i < length / 2; i++){
+            stack.push(phead.val);
+        }
+        if(length % 2 != 0){
+            phead = phead.next;
+        }
+        while(phead.next != null){
+            int cmp = stack.pop();
+            if(cmp != phead.val){
+                return false;
+            }
+            phead = phead.next;
+        }
+        return true;
+    }
+
+    //循环链表判断
+    /*
     * 快慢指针
-    * 快指针走了慢指针的2倍，head-循环点距离x，循环点-相遇点距离y，相遇点-循环点距离z，相遇时慢指针走了x+y，快指针走了x+（n+1）y+nz => x = （n - 1）b + nc = (n-1)(b+c) +c
+    * 快指针走了慢指针的2倍，head-循环点距离x，循环点-相遇点距离y，相遇点-循环点距离z
+    * 相遇时慢指针走了x+y，快指针走了x+（n+1）y+nz => x = （n - 1）b + nc = (n-1)(b+c) +c
     * 注意快指针垮两步时的空值问题
     * */
     public ListNode detectCycle(ListNode head) {
