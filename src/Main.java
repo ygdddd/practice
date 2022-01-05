@@ -7,9 +7,60 @@ public class Main {
         Main test = new Main();
 //        int[] nums = {4, 2};
         //char[][] matrix = {{'1','0','1','0','0'},{'1','0','1','1','1 '},{'1','1','1','1','1'},{'1','0','0','1','0'}};
-        System.out.println(test.firstBadVersion(2));
+        System.out.println(test.checkInclusion("trinitrophenylmethylnitramine","dinitrophenylhydrazinetrinitrophenylmethylnitramine"));
     }
 
+    /**
+     * 检查字符串2是否包含字符串1的排列，即判断字符串2是否存在长度为s1.size()的字串，且这个字串包含相同数量的字符
+     * 滑动窗口，注意离开边界的数，以及出现重复数时的判定
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean checkInclusion(String s1, String s2) {
+        boolean[] letter = new boolean[26];
+        int[] subNum = new int[26];
+        char[] c1 = s1.toCharArray();
+        char[] c2 = s2.toCharArray();
+        int window = c1.length - 1, total = c1.length;
+        for(char c: c1){
+            subNum[c - 'a']++;
+            letter[c - 'a'] = true;
+        }
+        int left = 0;
+        for(int i = 0; i < c2.length; i++){
+            if(i - left > window){
+                if(letter[c2[left] - 'a']){
+                    subNum[c2[left] - 'a']++;
+                    total++;
+                }
+                left++;
+            }
+            if(subNum[c2[i] - 'a'] > 0){
+                subNum[c2[i] - 'a']--;
+                total--;
+            }
+            else if(letter[c2[i] - 'a']){
+                for(int j = left; j < i; j++){
+                    if(c2[j] == c2[i]){
+                        left = j + 1;
+                        break;
+                    }
+                    else if(letter[c2[j] - 'a']){
+                        total++;
+                        subNum[c2[j] - 'a']++;
+                    }
+                }
+            }
+            if(total == 0){
+                return true;
+            }
+        }
+        for (int i : subNum) {
+            System.out.println(i);
+        }
+        return false;
+    }
     /**
      * easy
      * StringTokenizer的使用，注意空格
