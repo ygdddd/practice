@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LeetcodeEditor">
+    <option name="projectConfig">
+      <map>
+        <entry key="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/[239]滑动窗口最大值.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="contentPath" value="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/doc/content/[239]滑动窗口最大值.md" />
+              <option name="path" value="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/[239]滑动窗口最大值.java" />
+              <option name="questionId" value="239" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/[347]前 K 个高频元素.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="contentPath" value="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/doc/content/[347]前 K 个高频元素.md" />
+              <option name="path" value="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/[347]前 K 个高频元素.java" />
+              <option name="questionId" value="347" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/[557]反转字符串中的单词 III.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="contentPath" value="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/doc/content/[557]反转字符串中的单词 III.md" />
+              <option name="path" value="$USER_HOME$/Desktop/code/LeetCode/leetcode/editor/cn/[557]反转字符串中的单词 III.java" />
+              <option name="questionId" value="557" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

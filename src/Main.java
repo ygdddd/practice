@@ -5,11 +5,209 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Main test = new Main();
-        int[] nums = {4, 2};
-        test.printArray(nums);
-        System.out.println(test.largestRectangleArea(nums));
+//        int[] nums = {4, 2};
+        //char[][] matrix = {{'1','0','1','0','0'},{'1','0','1','1','1 '},{'1','1','1','1','1'},{'1','0','0','1','0'}};
+        System.out.println(test.firstBadVersion(2));
     }
 
+    /**
+     * easy
+     * StringTokenizer的使用，注意空格
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        StringTokenizer token = new StringTokenizer(s, " ");
+        StringBuffer result = new StringBuffer();
+        while(token.hasMoreTokens()) {
+            char[] c = reverse(token.nextToken().toCharArray());
+            result.append(new String(c));
+            if(token.hasMoreTokens()){
+                result.append(" ");
+            }
+        }
+        return result.toString();
+    }
+    public char[] reverse(char[] word){
+        int left = 0, right = word.length - 1;
+        while(left < right){
+            char c = word[left];
+            word[left] = word[right];
+            word[right] = c;
+            left++;
+            right--;
+        }
+        return word;
+    }
+
+    /**
+     * 考虑k>n的情况；
+     * 双边翻转，时间复杂度O(n)，空间复杂度O(1)
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+        k %= n;
+        reverse(nums, 0, n - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, n - 1);
+    }
+
+    public void reverse(int[] nums, int start, int end){
+        while(start < end){
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
+        }
+    }
+    /**
+     * 平方后排序：注意在新数组中从大到小排序，left值为从左数数已经排序好的个数，right在右移时以及去掉已排序的个数，right-left为下一个需要排序的index
+     * @param nums
+     * @return
+     */
+    public int[] sortedSquares(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        int[] sortedNum = new int[nums.length];
+        while(true){
+            if(left == right){
+                sortedNum[0] = nums[left] * nums[left];
+                break;
+            }
+            if(nums[left] + nums[right] < 0){
+                sortedNum[right - left] = nums[left] * nums[left];
+                left++;
+            }
+            else{
+                sortedNum[right - left] = nums[right] * nums[right];
+                right--;
+            }
+        }
+        return sortedNum;
+    }
+    public boolean isBadVersion(int n){
+        if(n >= 2){
+            return true;
+        }
+        return false;
+    }
+    public int firstBadVersion(int n) {
+        int left = 0, mid = 0, right = n - 1;
+        while(left < right){
+            mid = left + (right - left) / 2;
+            if(isBadVersion(mid + 1)){
+                if(mid == left){
+                    return mid + 1;
+                }
+                if(!isBadVersion(mid)){
+                    return mid + 1;
+                }
+                right = mid;
+            }
+            else{
+                left = mid + 1;
+            }
+        }
+        return mid + 1;
+    }
+    /**
+     * 注意边界应该是在mid左右，以及相等的情况
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        int num = -1, left = 0, right = nums.length - 1, mid = 0;
+        while(left <= right){
+            mid = (left + right) / 2;
+            if(nums[mid] == target){
+                num = mid;
+                break;
+            }
+            else if(nums[mid] > target){
+                right = mid - 1;
+            }
+            else{
+                left = mid + 1;
+            }
+        }
+        return num;
+    }
+    /*
+    * */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int[] result = new int[nums.length - k];
+        if(nums.length == 0){
+            return result;
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        int min = nums[0];
+        int minIndex = -1;
+        int startIndex = 0;
+        for(int j = 0; j < k; j++) {
+            queue.add(nums[j]);
+        }
+        for(int i = k; i < nums.length; i++){
+            if(minIndex < startIndex){
+                for(int j = 0; j < k; j++) {
+                    if (min < nums[j]) {
+                        min = nums[j];
+                    }
+                    minIndex = j;
+                }
+            }
+            queue.add(nums[k]);
+            queue.poll();
+            startIndex++;
+        }
+        return result;
+    }
+
+
+    /*最小栈（easy）
+    * 实现一个能直接返回栈内最小值的栈（使用stack类）
+    * */
+    class MinStack {
+        public Stack<Integer> stack;
+        public Stack<Integer> stackMin;
+        public MinStack() {
+            stack = new Stack<>();
+            stackMin = new Stack<>();
+        }
+
+        public void push(int val) {
+            if(stack.isEmpty() || val < stackMin.peek()){
+                stackMin.push(val);
+            }
+            else{
+                stackMin.push(stackMin.peek());
+            }
+            stack.push(val);
+            return;
+        }
+
+        public void pop() {
+            if(!stack.isEmpty()){
+                stack.pop();
+                stackMin.pop();
+            }
+            return;
+        }
+
+        public int top() {
+            if(!stack.isEmpty())
+                return stack.peek();
+            return 0;
+        }
+
+        public int getMin() {
+            if(stack.isEmpty())
+                return 0;
+            return stackMin.peek();
+        }
+    }
     /*
      * 有效的括号（easy）
      * 检查括号顺序（栈）
@@ -48,18 +246,62 @@ public class Main {
     }
 
     /*
+    * 矩形最大面积（hard），同寻找最大矩形
+    * 对于每个非1的点，找到向上的Height
+    * */
+    public int maximalRectangle(char[][] matrix) {
+        if(matrix.length == 0){
+            return 0;
+        }
+        int maxSize = 0;
+        int Height = matrix.length, Length = matrix[0].length;
+        int[][] heights= new int[Height][Length];
+        for(int i = 0 ; i <Height; i++){
+            for (int j = 0; j < Length; j++){
+//                System.out.print(matrix[i][j]);
+                if(matrix[i][j] == '0'){
+                    heights[i][j] = 0;
+                }
+                else{
+                    heights[i][j] = i != 0 ? heights[i - 1][j] + 1 : 1;
+                }
+            }
+//            System.out.print("\n");
+        }
+        for(int i = 0; i < Height; i++){
+            Stack<Integer> stack = new Stack<>();
+            int[] leftSide = new int[Length];
+            int[] rightSide = new int[Length];
+            Arrays.fill(rightSide,Length);
+            for(int j = 0; j < Length; j++){
+                int number = heights[i][j];
+                while ((!stack.isEmpty()) && heights[i][stack.peek()] >= number) {
+                    rightSide[stack.peek()] = j;
+                    stack.pop();
+                }
+                leftSide[j] = stack.isEmpty() ? -1 : stack.peek();
+                stack.push(j);
+            }
+            int size = 0;
+            for (int k = 0; k < Length; ++k) {
+                size = Math.max(size, (rightSide[k] - leftSide[k] - 1) * heights[i][k]);
+            }
+            maxSize = Math.max(size,maxSize);
+        }
+        return maxSize;
+    }
+
+    /*
      * 寻找柱状图中最大矩形(Hard)
      * 在某个区间存在最小的Height使得区间面积最大，公式为（l-r+1）* H
      * 寻找左右边界
      * */
     //递归方法：穷举法
     public int largestRectangleAreaByRecursion(int[] heights) {
-        int maxSize = 0;       //最大面积
         int length = heights.length;    //目前矩形长，初始值为数组长度
         int right = length - 1, left = 0;     //左右指针
         Main main = new Main();
-        maxSize = main.largestRectanglePart(heights, left, right);
-        return maxSize;
+        return main.largestRectanglePart(heights, left, right);
     }
     public int largestRectanglePart(int[] heights, int left, int right){
         System.out.println("new " + left + " " + right);
@@ -86,6 +328,7 @@ public class Main {
         int maxLR = Math.max(leftSize,rightSize);
         return Math.max(maxLR,size);
     }
+
     public int largestRectangleArea(int[] heights) {
         Stack<Integer> stack = new Stack<>();
         int size = 0, len = heights.length;
@@ -254,7 +497,6 @@ public class Main {
     /*链表排序（mid）
      *时间复杂度O(n * log(n))，空间O(1)，自底向上合并（二分，先分成最小的size，然后合并，size <<= 1），合并用merge方法
      * */
-    @NotNull
     public ListNode sortList(ListNode head) {
         if (head == null) {
             return head;
@@ -334,6 +576,7 @@ public class Main {
     }
 
     //移动0
+    //双指针，左指针标识下一个正确存放数字的位置，右指针按序寻找非0的数字
     public void moveZeroes(int[] nums) {
         int left = 0, right = 0;
         while (right < nums.length) {
@@ -487,11 +730,9 @@ public class Main {
                     right--;
                 }
             }
-
         }
         return lists;
     }
-
     //两个数组的中位数
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         int m = nums1.length, n = nums2.length;
