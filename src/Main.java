@@ -11,6 +11,27 @@ public class Main {
     }
 
     /**
+     * 滑动窗口
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        char[] c = s.toCharArray();
+        Set<Character> occ = new HashSet<>();
+        int right = 0, maxSize = 0;
+        for(int i = 0; i < s.length(); i++){
+            if(i != 0){
+                occ.remove(c[i - 1]);
+            }
+            while (right < s.length() && !occ.contains(c[right])){
+                occ.add(c[right]);
+                right++;
+            }
+            maxSize = Math.max(maxSize, right - i);
+        }
+        return maxSize;
+    }
+    /**
      * 检查字符串2是否包含字符串1的排列，即判断字符串2是否存在长度为s1.size()的字串，且这个字串包含相同数量的字符
      * 滑动窗口，注意离开边界的数，以及出现重复数时的判定
      * @param s1
