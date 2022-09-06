@@ -1,19 +1,49 @@
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Main test = new Main();
 //        int[] nums = {4, 2};
-        //char[][] matrix = {{'1','0','1','0','0'},{'1','0','1','1','1 '},{'1','1','1','1','1'},{'1','0','0','1','0'}};
-        System.out.println(test.checkInclusion("trinitrophenylmethylnitramine","dinitrophenylhydrazinetrinitrophenylmethylnitramine"));
+        int[][] matrix = {{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
+        System.out.println(test.findNumberIn2DArray(matrix,5));
+    }
+
+    /**
+     * 二维矩阵查找数
+     * @param matrix 二维矩阵
+     * @param target 目标数
+     * @return  bool
+     */
+    public boolean findNumberIn2DArray(int[][] matrix, int target) {
+        int up = 0, down = matrix.length - 1, left = 0, right = matrix[0].length - 1;
+        return subFind(matrix, target, up, down, left, right);
+    }
+
+    boolean subFind(int[][] matrix, int target, int up, int down, int left, int right) {
+        if (up == down && left == right) {
+            return matrix[up][left] == target ? true : false;
+        }
+        System.out.println(up + " " + down + " " + left + " " + right);
+        if (left <= right && up <= down) {
+            int rowMid = (left + right) / 2;
+            int colMid = (up + down) / 2;
+            if (matrix[colMid][rowMid] == target) {
+                return true;
+            } else if (matrix[colMid][rowMid] > target) {
+                if (subFind(matrix, target, up, colMid - 1, left, right) || subFind(matrix, target, colMid, down, left, rowMid - 1))
+                    return true;
+            } else {
+                if (subFind(matrix, target, up, colMid, rowMid + 1, right) || subFind(matrix, target, colMid + 1, down, left, right))
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**
      * 滑动窗口
-     * @param s
-     * @return
+     * @param s 输入数组
+     * @return 最大面积
      */
     public int lengthOfLongestSubstring(String s) {
         char[] c = s.toCharArray();
@@ -452,6 +482,7 @@ public class Main {
             }
         }
     }
+
 
     /*
      * 合并链表（easy）
